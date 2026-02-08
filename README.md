@@ -17,7 +17,7 @@ Das Plugin sucht den Titel auf YouTube und setzt automatisch Metadaten + Bild.
 
 ## Anforderungen
 
-- Jellyfin `10.10.x` oder neuer
+- Jellyfin `10.11.6` (aktuelle Release)
 - `.NET SDK 9.0` zum Bauen
 - Fuer Remote-Metadaten: `yt-dlp` muss im Jellyfin-System verfuegbar sein
 
@@ -31,11 +31,11 @@ dotnet publish .\Jellyfin.Plugin.YoutubeMetadata\Jellyfin.Plugin.YoutubeMetadata
 ## Plugin als ZIP bauen
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\build-release.ps1 -Version 0.1.0.2
+powershell -ExecutionPolicy Bypass -File .\scripts\build-release.ps1 -Version 0.1.0.3
 ```
 
 Output:
-- `artifacts\youtube-auto-metadata_0.1.0.2.zip`
+- `artifacts\youtube-auto-metadata_0.1.0.3.zip`
 - MD5-Checksum fuer `manifest.json`
 
 ## Repository-Installation in Jellyfin
@@ -50,7 +50,7 @@ Output:
 
 ## Wichtige Veroeffentlichungsschritte
 
-1. ZIP-Release in GitHub veroeffentlichen (`v0.1.0.2`)
+1. ZIP-Release in GitHub veroeffentlichen (`v0.1.0.3`)
 2. In `manifest.json`:
    - `sourceUrl` auf die echte Release-ZIP setzen
    - `checksum` mit echter MD5 ersetzen
