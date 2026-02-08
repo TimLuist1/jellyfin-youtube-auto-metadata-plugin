@@ -8,6 +8,14 @@
         "category": "Metadata",
         "versions": [
             {
+                "version": "0.1.0.4",
+                "changelog": "Compatibility release for Jellyfin 10.11.6 using net9.0.",
+                "targetAbi": "10.11.6",
+                "sourceUrl": "https://github.com/TimLuist1/jellyfin-youtube-auto-metadata-plugin/releases/download/v0.1.0.4/youtube-auto-metadata_0.1.0.4.zip",
+                "checksum": "e5135fe6b58d1ed0123cfd68a3f95695",
+                "timestamp": "2026-02-08T21:53:13Z"
+            },
+            {
                 "version": "0.1.0.2",
                 "changelog": "Compatibility release for Jellyfin 10.10.x and newer, with scheduler fix.",
                 "targetAbi": "10.10.0",
