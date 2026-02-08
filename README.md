@@ -31,11 +31,11 @@ dotnet publish .\Jellyfin.Plugin.YoutubeMetadata\Jellyfin.Plugin.YoutubeMetadata
 ## Plugin als ZIP bauen
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\build-release.ps1 -Version 0.1.0.3
+powershell -ExecutionPolicy Bypass -File .\scripts\build-release.ps1 -Version 0.1.0.4
 ```
 
 Output:
-- `artifacts\youtube-auto-metadata_0.1.0.3.zip`
+- `artifacts\youtube-auto-metadata_0.1.0.4.zip`
 - MD5-Checksum fuer `manifest.json`
 
 ## Repository-Installation in Jellyfin
@@ -50,7 +50,7 @@ Output:
 
 ## Wichtige Veroeffentlichungsschritte
 
-1. ZIP-Release in GitHub veroeffentlichen (`v0.1.0.3`)
+1. ZIP-Release in GitHub veroeffentlichen (`v0.1.0.4`)
 2. In `manifest.json`:
    - `sourceUrl` auf die echte Release-ZIP setzen
    - `checksum` mit echter MD5 ersetzen
