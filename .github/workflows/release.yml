@@ -61,7 +61,7 @@ jobs:
 
           (cd "$STAGE_DIR" && zip -r "../${ZIP_NAME}" .)
 
-          MD5="$(md5sum "${ZIP_NAME}" | awk '{print $1}')"
+          MD5="$(md5sum "artifacts/${ZIP_NAME}" | awk '{print $1}')"
           echo "zip_name=${ZIP_NAME}" >> "$GITHUB_OUTPUT"
           echo "md5=${MD5}" >> "$GITHUB_OUTPUT"
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
