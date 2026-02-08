@@ -49,10 +49,7 @@ namespace Jellyfin.Plugin.YoutubeMetadata
 
         public IEnumerable<TaskTriggerInfo> GetDefaultTriggers()
         {
-            return new[]
-            {
-                new TaskTriggerInfo { Type = TaskTriggerInfoType.IntervalTrigger, IntervalTicks = TimeSpan.FromHours(24).Ticks }
-            };
+            return Array.Empty<TaskTriggerInfo>();
         }
 
         public async Task Run(IProgress<double> progress, CancellationToken cancellationToken)
