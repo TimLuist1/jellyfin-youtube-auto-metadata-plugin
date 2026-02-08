@@ -27,16 +27,40 @@ jobs:
       - name: Publish plugin
         run: dotnet publish Jellyfin.Plugin.YoutubeMetadata/Jellyfin.Plugin.YoutubeMetadata.csproj -c Release -o artifacts/publish
 
-      - name: Create zip and checksum
+      - name: Build minimal plugin package
         id: package
         shell: bash
         run: |
           set -euo pipefail
           VERSION="${GITHUB_REF_NAME#v}"
           ZIP_NAME="youtube-auto-metadata_${VERSION}.zip"
-          cd artifacts/publish
-          zip -r "../${ZIP_NAME}" .
-          cd ..
+          TIMESTAMP="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+          STAGE_DIR="artifacts/package"
+
+          rm -rf "$STAGE_DIR"
+          mkdir -p "$STAGE_DIR"
+
+          cp artifacts/publish/Jellyfin.Plugin.YoutubeMetadata.dll "$STAGE_DIR/"
+          cp artifacts/publish/NYoutubeDLP.dll "$STAGE_DIR/"
+          cp artifacts/publish/System.IO.Abstractions.dll "$STAGE_DIR/"
+
+          cat > "$STAGE_DIR/meta.json" <<EOF
+          {
+            "category": "Metadata",
+            "changelog": "Packaging fix for Jellyfin 10.11.6 compatibility.",
+            "description": "Automatically fetches YouTube metadata and thumbnails by title, even when no YouTube ID exists in filenames.",
+            "guid": "bb165877-2d2a-458d-aa02-52b9f632d974",
+            "name": "YouTube Auto Metadata",
+            "overview": "YouTube metadata provider with title-based matching and optional AI cleanup.",
+            "owner": "TimLuist1",
+            "targetAbi": "10.11.6",
+            "timestamp": "${TIMESTAMP}",
+            "version": "${VERSION}"
+          }
+          EOF
+
+          (cd "$STAGE_DIR" && zip -r "../${ZIP_NAME}" .)
+
           MD5="$(md5sum "${ZIP_NAME}" | awk '{print $1}')"
           echo "zip_name=${ZIP_NAME}" >> "$GITHUB_OUTPUT"
           echo "md5=${MD5}" >> "$GITHUB_OUTPUT"

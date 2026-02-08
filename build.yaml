@@ -1,7 +1,7 @@
 ---
 name: "YouTube Auto Metadata"
 guid: "bb165877-2d2a-458d-aa02-52b9f632d974"
-version: "0.1.0.4"
+version: "0.1.0.5"
 targetAbi: "10.11.6"
 framework: "net9.0"
 overview: "Automatically fetch YouTube metadata by title."
@@ -12,5 +12,8 @@ category: "Metadata"
 owner: "TimLuist1"
 artifacts:
   - "Jellyfin.Plugin.YoutubeMetadata.dll"
+  - "NYoutubeDLP.dll"
+  - "System.IO.Abstractions.dll"
 changelog: >
-  Compatibility release for Jellyfin 10.11.6 using net9.0.
+  Packaging fix: ship only plugin runtime dependencies and include meta.json
+  for stable loading on Jellyfin 10.11.6.

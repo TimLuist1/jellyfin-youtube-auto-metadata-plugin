@@ -31,11 +31,11 @@ dotnet publish .\Jellyfin.Plugin.YoutubeMetadata\Jellyfin.Plugin.YoutubeMetadata
 ## Plugin als ZIP bauen
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\build-release.ps1 -Version 0.1.0.4
+powershell -ExecutionPolicy Bypass -File .\scripts\build-release.ps1 -Version 0.1.0.5
 ```
 
 Output:
-- `artifacts\youtube-auto-metadata_0.1.0.4.zip`
+- `artifacts\youtube-auto-metadata_0.1.0.5.zip`
 - MD5-Checksum fuer `manifest.json`
 
 ## Repository-Installation in Jellyfin
@@ -50,11 +50,21 @@ Output:
 
 ## Wichtige Veroeffentlichungsschritte
 
-1. ZIP-Release in GitHub veroeffentlichen (`v0.1.0.4`)
+1. ZIP-Release in GitHub veroeffentlichen (`v0.1.0.5`)
 2. In `manifest.json`:
    - `sourceUrl` auf die echte Release-ZIP setzen
    - `checksum` mit echter MD5 ersetzen
 3. Aenderungen pushen
+
+## Troubleshooting `Status: NotSupported`
+
+Wenn Jellyfin den Plugin-Status auf `NotSupported` setzt, wurden meist alte oder unpassende DLLs geladen.
+
+1. Alte Versionen entfernen (Container/Host):
+   - `/config/plugins/YouTube Auto Metadata_0.1.0.0`
+   - `/config/plugins/YouTube Auto Metadata_0.1.0.2`
+2. Jellyfin neu starten.
+3. Plugin `0.1.0.5` aus dem Repository neu installieren.
 
 ## Konfiguration (Jellyfin Plugin-Seite)
 

@@ -1,5 +1,5 @@
 param(
-    [string]$Version = "0.1.0.4",
+    [string]$Version = "0.1.0.5",
     [string]$Configuration = "Release"
 )
 
@@ -20,9 +20,35 @@ if (Test-Path $stagePath) {
 New-Item -ItemType Directory -Path $stagePath | Out-Null
 
 Write-Host "Collecting publish artifacts..."
-Get-ChildItem $publishPath -File | ForEach-Object {
-    Copy-Item $_.FullName -Destination (Join-Path $stagePath $_.Name) -Force
+$requiredFiles = @(
+    "Jellyfin.Plugin.YoutubeMetadata.dll",
+    "NYoutubeDLP.dll",
+    "System.IO.Abstractions.dll"
+)
+
+foreach ($file in $requiredFiles) {
+    $source = Join-Path $publishPath $file
+    if (-not (Test-Path $source)) {
+        throw "Required artifact not found: $source"
+    }
+
+    Copy-Item $source -Destination (Join-Path $stagePath $file) -Force
 }
+
+$metaJson = @{
+    category = "Metadata"
+    changelog = "Packaging fix for Jellyfin 10.11.6 compatibility."
+    description = "Automatically fetches YouTube metadata and thumbnails by title, even when no YouTube ID exists in filenames."
+    guid = "bb165877-2d2a-458d-aa02-52b9f632d974"
+    name = "YouTube Auto Metadata"
+    overview = "YouTube metadata provider with title-based matching and optional AI cleanup."
+    owner = "TimLuist1"
+    targetAbi = "10.11.6"
+    timestamp = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+    version = $Version
+}
+
+$metaJson | ConvertTo-Json | Set-Content -Path (Join-Path $stagePath "meta.json") -Encoding UTF8
 
 if (Test-Path $zipPath) {
     Remove-Item -Force $zipPath
