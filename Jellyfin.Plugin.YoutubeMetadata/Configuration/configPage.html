@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>YouTube Auto Metadata</title>
+</head>
+<body>
+    <div id="YoutubeMetadataConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-select,emby-checkbox">
+        <div data-role="content">
+            <div class="content-primary">
+                <form id="YoutubeMetadataConfigForm">
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input id="EnableTitleLookupWithoutId" type="checkbox" is="emby-checkbox" />
+                            <span>Automatisch per Titel suchen (ohne YouTube-ID)</span>
+                        </label>
+                        <div class="fieldDescription">Findet Folgen wie "I'm Doing Something Crazy - Tech House Episode 1.mp4" automatisch auf YouTube.</div>
+                    </div>
+
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="SearchResultLimit">Max Suchtreffer</label>
+                        <input id="SearchResultLimit" type="number" is="emby-input" min="1" max="25" />
+                        <div class="fieldDescription">Wie viele YouTube-Suchergebnisse pro Titel geprueft werden (1-25).</div>
+                    </div>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input id="EnableAutoEpisodeIndexing" type="checkbox" is="emby-checkbox" />
+                            <span>Automatische Episoden-Nummern aus Titel</span>
+                        </label>
+                    </div>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input id="PreferUploaderAsSeriesName" type="checkbox" is="emby-checkbox" />
+                            <span>Serie nach YouTube-Kanal gruppieren</span>
+                        </label>
+                    </div>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input id="EnableAiMetadataCleanup" type="checkbox" is="emby-checkbox" />
+                            <span>KI-Metadatenbereinigung aktivieren</span>
+                        </label>
+                    </div>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input id="EnableAiDescriptionCleanup" type="checkbox" is="emby-checkbox" />
+                            <span>KI soll auch Beschreibungen ueberarbeiten</span>
+                        </label>
+                    </div>
+
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="AiBaseUrl">KI API Base URL</label>
+                        <input id="AiBaseUrl" type="text" is="emby-input" />
+                        <div class="fieldDescription">OpenAI-kompatible API, z. B. https://api.openai.com/v1</div>
+                    </div>
+
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="AiModel">KI Modell</label>
+                        <input id="AiModel" type="text" is="emby-input" />
+                    </div>
+
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="AiApiKey">KI API Key</label>
+                        <input id="AiApiKey" type="password" is="emby-input" />
+                    </div>
+
+                    <div>
+                        <button is="emby-button" type="submit" class="raised button-submit block emby-button">
+                            <span>Save</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script type="text/javascript">
+            var YoutubeMetadataConfig = {
+                pluginUniqueId: 'bb165877-2d2a-458d-aa02-52b9f632d974'
+            };
+
+            document.querySelector('#YoutubeMetadataConfigPage')
+                .addEventListener('pageshow', function () {
+                    Dashboard.showLoadingMsg();
+                    ApiClient.getPluginConfiguration(YoutubeMetadataConfig.pluginUniqueId).then(function (config) {
+                        document.querySelector('#EnableTitleLookupWithoutId').checked = config.EnableTitleLookupWithoutId;
+                        document.querySelector('#SearchResultLimit').value = config.SearchResultLimit;
+                        document.querySelector('#EnableAutoEpisodeIndexing').checked = config.EnableAutoEpisodeIndexing;
+                        document.querySelector('#PreferUploaderAsSeriesName').checked = config.PreferUploaderAsSeriesName;
+                        document.querySelector('#EnableAiMetadataCleanup').checked = config.EnableAiMetadataCleanup;
+                        document.querySelector('#EnableAiDescriptionCleanup').checked = config.EnableAiDescriptionCleanup;
+                        document.querySelector('#AiBaseUrl').value = config.AiBaseUrl || '';
+                        document.querySelector('#AiModel').value = config.AiModel || '';
+                        document.querySelector('#AiApiKey').value = config.AiApiKey || '';
+                        Dashboard.hideLoadingMsg();
+                    });
+                });
+
+            document.querySelector('#YoutubeMetadataConfigForm')
+                .addEventListener('submit', function (e) {
+                    Dashboard.showLoadingMsg();
+                    ApiClient.getPluginConfiguration(YoutubeMetadataConfig.pluginUniqueId).then(function (config) {
+                        config.EnableTitleLookupWithoutId = document.querySelector('#EnableTitleLookupWithoutId').checked;
+                        var limit = parseInt(document.querySelector('#SearchResultLimit').value || '10', 10);
+                        if (isNaN(limit)) {
+                            limit = 10;
+                        }
+                        config.SearchResultLimit = Math.min(25, Math.max(1, limit));
+                        config.EnableAutoEpisodeIndexing = document.querySelector('#EnableAutoEpisodeIndexing').checked;
+                        config.PreferUploaderAsSeriesName = document.querySelector('#PreferUploaderAsSeriesName').checked;
+                        config.EnableAiMetadataCleanup = document.querySelector('#EnableAiMetadataCleanup').checked;
+                        config.EnableAiDescriptionCleanup = document.querySelector('#EnableAiDescriptionCleanup').checked;
+                        config.AiBaseUrl = document.querySelector('#AiBaseUrl').value;
+                        config.AiModel = document.querySelector('#AiModel').value;
+                        config.AiApiKey = document.querySelector('#AiApiKey').value;
+
+                        ApiClient.updatePluginConfiguration(YoutubeMetadataConfig.pluginUniqueId, config).then(function (result) {
+                            Dashboard.processPluginConfigurationUpdateResult(result);
+                        });
+                    });
+
+                    e.preventDefault();
+                    return false;
+                });
+        </script>
+    </div>
+</body>
+</html>

@@ -1,0 +1,50 @@
+name: Build And Release Plugin
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.x"
+
+      - name: Restore
+        run: dotnet restore Jellyfin.Plugin.YoutubeMetadata.sln
+
+      - name: Publish plugin
+        run: dotnet publish Jellyfin.Plugin.YoutubeMetadata/Jellyfin.Plugin.YoutubeMetadata.csproj -c Release -o artifacts/publish
+
+      - name: Create zip and checksum
+        id: package
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="${GITHUB_REF_NAME#v}"
+          ZIP_NAME="youtube-auto-metadata_${VERSION}.zip"
+          cd artifacts/publish
+          zip -r "../${ZIP_NAME}" .
+          cd ..
+          MD5="$(md5sum "${ZIP_NAME}" | awk '{print $1}')"
+          echo "zip_name=${ZIP_NAME}" >> "$GITHUB_OUTPUT"
+          echo "md5=${MD5}" >> "$GITHUB_OUTPUT"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/${{ steps.package.outputs.zip_name }}
+          body: |
+            MD5: `${{ steps.package.outputs.md5 }}`
