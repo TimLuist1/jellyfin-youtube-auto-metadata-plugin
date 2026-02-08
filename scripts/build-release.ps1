@@ -1,5 +1,5 @@
 param(
-    [string]$Version = "0.1.0.0",
+    [string]$Version = "0.1.0.1",
     [string]$Configuration = "Release"
 )
 
@@ -42,7 +42,7 @@ Write-Host ""
 Write-Host "manifest.json version block:"
 Write-Host "{"
 Write-Host "  `"version`": `"$Version`","
-Write-Host "  `"targetAbi`": `"10.11.2`","
+Write-Host "  `"targetAbi`": `"10.10.0`","
 Write-Host "  `"sourceUrl`": `"https://github.com/TimLuist1/jellyfin-youtube-auto-metadata-plugin/releases/download/v$Version/youtube-auto-metadata_$Version.zip`","
 Write-Host "  `"checksum`": `"$md5`","
 Write-Host "  `"timestamp`": `"`$(Get-Date -Format 'yyyy-MM-ddTHH:mm:ssZ')`""
